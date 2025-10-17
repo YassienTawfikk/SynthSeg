@@ -399,9 +399,16 @@ def conv_dec(nb_features,
         last_tensor = input_tensor
     else:
         input_tensor = input_model.input
+             
+    if isinstance(input_model.output, list):
+        last_tensor = input_model.output[0]
+    else:
         last_tensor = input_model.output
-        input_shape = last_tensor.shape.as_list()[1:]
 
+    # Safely get shape, fallback to None for unknown dims
+    shape_list = last_tensor.shape.as_list()
+    input_shape = [dim if dim is not None else 0 for dim in shape_list[1:]]
+                      
     # vol size info
     ndims = len(input_shape) - 1
     if isinstance(pool_size, int):
